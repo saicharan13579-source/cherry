@@ -4,7 +4,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <title>Cherry</title>
-<meta name="cherry-build" content="9">
+<meta name="cherry-build" content="10">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one daily cockpit up top (today's session + habits + weight trend), reference sections below, sticky pill nav */
@@ -2937,6 +2937,7 @@ window.__hcPerm=function(g){renderHC();if(g){toast('Connected to '+HCN);hcSync(3
 const hcHM=s=>{const t=String(s).split('T')[1]||'';return t.slice(0,5)};
 const hcDay=s=>String(s).slice(0,10);
 window.__hcData=function(x){HC.busy=false;if(!x||!x.ok){renderHC();if(!HC.quiet)toast(x&&x.error==='android'?'Needs Android 14 or newer':'Could not read Health Connect');return}
+  {const sig=JSON.stringify(Object.assign({},x,{granted:0}));if(HC.quiet&&sig===HC.sig){state.hcLast=Date.now();HC.checked=Date.now();renderHC();return}HC.sig=sig;HC.checked=Date.now()}
   let n=0;const touch=d=>{if(!/^\d{4}-\d{2}-\d{2}$/.test(d))return null;const r=ensure(d);r.hc=r.hc||{};return r};
   for(const [d,v] of Object.entries(x.steps||{})){if(v>0){const r=touch(d);if(r){if(Number(r.steps)!==Math.round(v))n++;r.steps=Math.round(v);r.hc.steps=true}}}
   for(const [d,v] of Object.entries(x.kcal||{})){if(v>0){const r=touch(d);if(r)r.hc.akcal=Math.round(v)}}
@@ -2953,14 +2954,20 @@ window.__hcData=function(x){HC.busy=false;if(!x||!x.ok){renderHC();if(!HC.quiet)
   state.progress.sort((a,b)=>a.date.localeCompare(b.date));
   state.hcLast=Date.now();HC.errs=Object.keys(x).filter(k=>/Err$/.test(k)).map(k=>k.replace('Err',''));
   save();try{renderAll()}catch(e){}renderHC();if(!HC.quiet)toast(n?'Synced from Google Health · '+n+' updates':'Up to date with Google Health')};
-window.__cherryResume=function(){if(hcGranted()&&(!state.hcLast||Date.now()-state.hcLast>5*60000))hcSync(7,true)};
+window.__cherryResume=function(){if(hcGranted())hcSync(7,true)};
+/* live: check Google Health every 30 s while Cherry is on screen */
+setInterval(()=>{if(!document.hidden&&hcGranted())hcSync(2,true)},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&hcGranted())hcSync(7,true)});
+setInterval(()=>{const c=$('hcCard');if(c&&hcGranted()&&!HC.busy){const sm=c.querySelector('.hc-top small');if(sm)sm.textContent=hcLiveText()}},1000);
+function hcLiveText(){const n=hcGranted().split(',').length,t=HC.checked||state.hcLast;if(!t)return 'Connected · '+n+' of 8 data types';const s=Math.round((Date.now()-t)/1000);
+  return '● Live · checked '+(s<5?'just now':s<60?s+' s ago':Math.round(s/60)+' min ago')+' · '+n+' of 8 data types'}
 /* Move and Exercise rings use real watch data when it's there */
 {const _mk=moveKcal;moveKcal=function(d){const r=state.daily[d],a=r&&r.hc&&r.hc.akcal;return a>0?a:_mk(d)};
  const _ex=exMin;exMin=function(d){const r=state.daily[d],a=r&&r.hc&&r.hc.ex;return Math.max(_ex(d),a>0?a:0)}}
 MET.rhr={name:'Resting heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.rhr?r.hc.rhr:null}};
 MET.hr={name:'Average heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.hr?r.hc.hr:null}};
 function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup=hcSupported(),n=g?g.split(',').length:0;
-  const st=!HC.app?'Works in the Cherry app on your phone.':!sup?'Your phone needs Android 14 or newer for Health Connect.':HC.busy?'Syncing…':g?'Connected · '+n+' of 8 data types · synced '+hcAgo(state.hcLast):'Not connected yet';
+  const st=!HC.app?'Works in the Cherry app on your phone.':!sup?'Your phone needs Android 14 or newer for Health Connect.':HC.busy&&!HC.quiet?'Syncing…':g?hcLiveText():'Not connected yet';
   box.innerHTML=`<div class="hc-top"><div class="hc-logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z" fill="#fff"/><path d="M6 12.5h3l1.5-3 2.5 6 1.5-3H18" stroke="#2FA84F" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>${IOS?'Apple Health':'Google Health · Health Connect'}</b><small>${st}</small></div></div>`;
   const row=document.createElement('div');row.className='row';row.style.cssText='gap:8px;margin-top:12px;flex-wrap:wrap';
   const btn=(t,f,ghost)=>{const b=document.createElement('button');b.type='button';b.textContent=t;if(ghost)b.className='ghost';b.onclick=f;row.append(b);return b};
