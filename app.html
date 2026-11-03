@@ -4,7 +4,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <title>Cherry</title>
-<meta name="cherry-build" content="8">
+<meta name="cherry-build" content="9">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one daily cockpit up top (today's session + habits + weight trend), reference sections below, sticky pill nav */
@@ -2927,13 +2927,13 @@ function renderTiles(){const box=$('oneTiles');if(!box)return;box.replaceChildre
 })();
 
 /* ===================== Google Health via Android Health Connect ===================== */
-const HC={app:!!(window.CherryApp&&window.CherryApp.hcSupported),busy:false};
+const IOS=!!window.__cherryIOS;const HCN=IOS?'Apple Health':'Health Connect';const HC={app:!!(window.CherryApp&&window.CherryApp.hcSupported),busy:false};
 function hcSupported(){try{return HC.app&&CherryApp.hcSupported()}catch(e){return false}}
 function hcGranted(){try{return hcSupported()?String(CherryApp.hcGranted()||''):''}catch(e){return ''}}
 function hcAgo(t){if(!t)return 'never';const m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
 function hcSync(days,quiet){if(!hcSupported()||HC.busy)return;if(!hcGranted()){if(!quiet)hcConnect();return}HC.busy=true;HC.quiet=!!quiet;renderHC();try{CherryApp.hcRead(days||14)}catch(e){HC.busy=false;renderHC()}}
-function hcConnect(){if(!HC.app){toast('Open Cherry on your Android phone to connect');return}if(!hcSupported()){toast('Needs Android 14 or newer');return}try{CherryApp.hcAsk()}catch(e){try{CherryApp.hcOpen()}catch(x){}}}
-window.__hcPerm=function(g){renderHC();if(g){toast('Connected to Health Connect');hcSync(30)}else{toast('No access given. Tap "Open Health Connect" to allow Cherry.')}};
+function hcConnect(){if(!HC.app){toast('Open the Cherry app on your phone to connect');return}if(!hcSupported()){toast('Needs Android 14 or newer');return}try{CherryApp.hcAsk()}catch(e){try{CherryApp.hcOpen()}catch(x){}}}
+window.__hcPerm=function(g){renderHC();if(g){toast('Connected to '+HCN);hcSync(30)}else{toast('No access given. Tap "Open '+HCN+'" to allow Cherry.')}};
 const hcHM=s=>{const t=String(s).split('T')[1]||'';return t.slice(0,5)};
 const hcDay=s=>String(s).slice(0,10);
 window.__hcData=function(x){HC.busy=false;if(!x||!x.ok){renderHC();if(!HC.quiet)toast(x&&x.error==='android'?'Needs Android 14 or newer':'Could not read Health Connect');return}
@@ -2960,13 +2960,13 @@ window.__cherryResume=function(){if(hcGranted()&&(!state.hcLast||Date.now()-stat
 MET.rhr={name:'Resting heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.rhr?r.hc.rhr:null}};
 MET.hr={name:'Average heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.hr?r.hc.hr:null}};
 function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup=hcSupported(),n=g?g.split(',').length:0;
-  const st=!HC.app?'Works in the Cherry app on your Android phone.':!sup?'Your phone needs Android 14 or newer for Health Connect.':HC.busy?'Syncing…':g?'Connected · '+n+' of 8 data types · synced '+hcAgo(state.hcLast):'Not connected yet';
-  box.innerHTML=`<div class="hc-top"><div class="hc-logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z" fill="#fff"/><path d="M6 12.5h3l1.5-3 2.5 6 1.5-3H18" stroke="#2FA84F" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>Google Health · Health Connect</b><small>${st}</small></div></div>`;
+  const st=!HC.app?'Works in the Cherry app on your phone.':!sup?'Your phone needs Android 14 or newer for Health Connect.':HC.busy?'Syncing…':g?'Connected · '+n+' of 8 data types · synced '+hcAgo(state.hcLast):'Not connected yet';
+  box.innerHTML=`<div class="hc-top"><div class="hc-logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z" fill="#fff"/><path d="M6 12.5h3l1.5-3 2.5 6 1.5-3H18" stroke="#2FA84F" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>${IOS?'Apple Health':'Google Health · Health Connect'}</b><small>${st}</small></div></div>`;
   const row=document.createElement('div');row.className='row';row.style.cssText='gap:8px;margin-top:12px;flex-wrap:wrap';
   const btn=(t,f,ghost)=>{const b=document.createElement('button');b.type='button';b.textContent=t;if(ghost)b.className='ghost';b.onclick=f;row.append(b);return b};
-  if(HC.app&&sup){if(!g)btn('Connect',hcConnect);else btn(HC.busy?'Syncing…':'Sync now',()=>hcSync(30)).disabled=HC.busy;btn('Open Health Connect',()=>{try{CherryApp.hcOpen()}catch(e){}},true)}
+  if(HC.app&&sup){if(!g)btn('Connect',hcConnect);else btn(HC.busy?'Syncing…':'Sync now',()=>hcSync(30)).disabled=HC.busy;btn('Open '+HCN,()=>{try{CherryApp.hcOpen()}catch(e){}},true)}
   box.append(row);
-  const how=document.createElement('details');how.className='hc-how';how.innerHTML=`<summary>How to set it up</summary><ol><li>In the <b>Fitbit / Google Health</b> app: Profile → Settings → <b>Health Connect</b> → turn on syncing (allow steps, sleep, heart rate, weight, calories, exercise, water).</li><li>Here, tap <b>Connect</b> and allow all.</li><li>Cherry then fills in steps, sleep, weight, heart rate, calories and water by itself every time you open it.</li></ol><p class="muted">Data stays on your phone. Cherry only reads, it never changes anything.</p>`;
+  const how=document.createElement('details');how.className='hc-how';how.innerHTML=IOS?`<summary>How to set it up</summary><ol><li>Tap <b>Connect</b> and turn on all the categories Apple Health shows.</li><li>Your iPhone (and Apple Watch, if you have one) already record steps, energy and exercise. Sleep, heart rate and weight come in from any app that writes to Apple Health.</li><li>To change access later: Settings → Health → Data Access &amp; Devices → Cherry.</li></ol><p class="muted">Data stays on your phone. Cherry only reads, it never changes anything.</p>`:`<summary>How to set it up</summary><ol><li>In the <b>Fitbit / Google Health</b> app: Profile → Settings → <b>Health Connect</b> → turn on syncing (allow steps, sleep, heart rate, weight, calories, exercise, water).</li><li>Here, tap <b>Connect</b> and allow all.</li><li>Cherry then fills in steps, sleep, weight, heart rate, calories and water by itself every time you open it.</li></ol><p class="muted">Data stays on your phone. Cherry only reads, it never changes anything.</p>`;
   if(!g||!HC.app)how.open=!HC.app?false:true;box.append(how);
   if(g&&HC.errs&&HC.errs.length){const p=document.createElement('p');p.className='muted';p.style.fontSize='12px';p.textContent='No access to: '+HC.errs.join(', ')+'. Allow them in Health Connect.';box.append(p)}}
 (function(){const health=$('health');if(!health)return;const c=document.createElement('div');c.className='ap-card hc-card';c.id='hcCard';
@@ -2975,7 +2975,7 @@ function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup
   renderHC();
   /* home tile: connect or heart rate */
   const _rt=renderTiles;renderTiles=function(){_rt();const box=$('oneTiles');if(!box)return;const g=hcGranted();
-    if(!g){const t=oneTile('wide c-green','health',`<div class="t-h">Google Health</div><div class="t-name">${HC.app?'Connect your Fitbit data':'Sync from Fitbit'}</div><div class="t-sub">${HC.app?'Steps, sleep, heart rate and weight fill in by themselves.':'Open Cherry on your phone to connect Health Connect.'}</div><svg class="t-ico" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="oaH1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E3FFE9"/><stop offset="1" stop-color="#7BE495"/></linearGradient></defs><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="url(#oaH1)"/><path d="M30 56h16l8-14 12 28 8-14h16" stroke="#1E8E3E" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
+    if(!g){const t=oneTile('wide c-green','health',`<div class="t-h">${IOS?'Apple Health':'Google Health'}</div><div class="t-name">${IOS?'Connect Apple Health':HC.app?'Connect your Fitbit data':'Sync from Fitbit'}</div><div class="t-sub">${HC.app?'Steps, sleep, heart rate and weight fill in by themselves.':'Open Cherry on your phone to connect Health Connect.'}</div><svg class="t-ico" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="oaH1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E3FFE9"/><stop offset="1" stop-color="#7BE495"/></linearGradient></defs><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="url(#oaH1)"/><path d="M30 56h16l8-14 12 28 8-14h16" stroke="#1E8E3E" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
       if(HC.app)t.dataset.act='hc';box.insertBefore(t,box.children[1]||null)}
     else{const r=state.daily[TODAY]||{},hc=r.hc||{},last=lastVal('rhr');const t=oneTile('dark','health',`<div class="t-h">Heart rate</div><svg class="t-ico" viewBox="0 0 120 120" style="width:56px;height:56px;right:10px;top:10px" aria-hidden="true"><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="#C4604E"/></svg><div class="t-big">${last?last.v:'—'}<small>bpm</small></div><div class="t-sub" style="opacity:.7">resting${hc.hr?' · avg today '+hc.hr:''}</div>`);
       const sl=box.querySelector('.one-t:nth-child(3)');box.insertBefore(t,sl?sl.nextSibling:null)}};

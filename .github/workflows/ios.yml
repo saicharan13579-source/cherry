@@ -1,0 +1,46 @@
+name: Build iPhone app
+on:
+  push:
+    branches: [main]
+    paths: ["ios/**", "app.html", "version.json", ".github/workflows/ios.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  ios:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Put the latest Cherry page inside the app
+        run: |
+          mkdir -p ios/Cherry/web
+          cp app.html ios/Cherry/web/index.html
+          cp three.min.js ios/Cherry/web/three.min.js
+          python3 -c "import json;print(json.load(open('version.json'))['build'])" > ios/Cherry/web/build.txt
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          cd ios && xcodegen generate
+      - name: Build
+        run: |
+          cd ios
+          xcodebuild -project Cherry.xcodeproj -scheme Cherry -configuration Release -sdk iphoneos \
+            -destination 'generic/platform=iOS' -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build | tail -n 60
+          test -d build/Build/Products/Release-iphoneos/Cherry.app
+      - name: Package Cherry.ipa
+        run: |
+          cd ios
+          mkdir -p Payload && cp -R build/Build/Products/Release-iphoneos/Cherry.app Payload/
+          zip -qry ../Cherry.ipa Payload
+          ls -la ../Cherry.ipa
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Cherry-iPhone
+          path: Cherry.ipa
+      - name: Publish to the "iphone" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete iphone -y --cleanup-tag || true
+          gh release create iphone Cherry.ipa --title "Cherry for iPhone" --notes "Install Cherry.ipa with Sideloadly (see README)." --latest

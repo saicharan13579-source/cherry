@@ -1,0 +1,46 @@
+name: Cherry
+options:
+  bundleIdPrefix: app.cherry
+  deploymentTarget:
+    iOS: "15.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    TARGETED_DEVICE_FAMILY: "1,2"
+    ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    CODE_SIGN_ENTITLEMENTS: Cherry/Cherry.entitlements
+targets:
+  Cherry:
+    type: application
+    platform: iOS
+    sources:
+      - path: Cherry
+        excludes: ["web/**"]
+      - path: Cherry/web
+        type: folder
+        buildPhase: resources
+    info:
+      path: Cherry/Info.plist
+      properties:
+        CFBundleDisplayName: Cherry
+        CFBundleShortVersionString: "1.0"
+        CFBundleVersion: "1"
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight, UIInterfaceOrientationPortraitUpsideDown]
+        UISupportedInterfaceOrientations~ipad: [UIInterfaceOrientationPortrait, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight, UIInterfaceOrientationPortraitUpsideDown]
+        UIRequiresFullScreen: false
+        UIStatusBarStyle: UIStatusBarStyleDefault
+        UIViewControllerBasedStatusBarAppearance: true
+        NSHealthShareUsageDescription: "Cherry reads your steps, sleep, weight, heart rate, active energy, exercise minutes and water so your rings, sleep score and weight trend fill in by themselves. Nothing leaves your phone."
+        NSHealthUpdateUsageDescription: "Cherry does not write to Apple Health."
+        NSPhotoLibraryUsageDescription: "Pick progress photos to keep in Cherry."
+        NSCameraUsageDescription: "Take a progress photo."
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.cherry.fitness
+        INFOPLIST_FILE: Cherry/Info.plist
+        GENERATE_INFOPLIST_FILE: NO
