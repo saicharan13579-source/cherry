@@ -5,7 +5,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>window.__cherryApp=true</script></head><body>
 <title>Cherry</title>
-<meta name="cherry-build" content="11">
+<meta name="cherry-build" content="12">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one daily cockpit up top (today's session + habits + weight trend), reference sections below, sticky pill nav */
@@ -1448,8 +1448,8 @@ function normalize(s){
     const pro=Array.isArray(v.pro)?v.pro.filter(p=>p&&Number(p.g)>0).map(p=>({n:String(p.n||'Other').slice(0,40),g:Number(p.g)})):[];
     const ba=x=>Array.isArray(x)?x.map(Boolean):[];
     const rd=v.ready&&typeof v.ready==='object'?{sleep:Number(v.ready.sleep)||0,sore:Number(v.ready.sore)||0,energy:Number(v.ready.energy)||0,fit:v.ready.fit===''||v.ready.fit==null?'':Number(v.ready.fit)}:null;
-    out.daily[d]={rc:Array.isArray(v.rc)?v.rc.map(Boolean):[],ready:rd,breaks:Number(v.breaks)||0,cal:v.cal===''||v.cal==null?'':Number(v.cal)||0,h:HABITS.map((_,i)=>!!h[i]),ex:ba(v.ex),wu:ba(v.wu),cd:ba(v.cd),meals:ba(v.meals),sets,load,pro,water:Number(v.water)||0,steps:v.steps===''||v.steps==null?'':Number(v.steps)||0,notes:String(v.notes||''),bed:/^\d{2}:\d{2}$/.test(v.bed||'')?v.bed:'',wake:/^\d{2}:\d{2}$/.test(v.wake||'')?v.wake:''};if(v.hc&&typeof v.hc==='object')out.daily[d].hc={akcal:Number(v.hc.akcal)||0,ex:Number(v.hc.ex)||0,hr:Number(v.hc.hr)||0,rhr:Number(v.hc.rhr)||0,hrMin:Number(v.hc.hrMin)||0,hrMax:Number(v.hc.hrMax)||0,sleep:!!v.hc.sleep,steps:!!v.hc.steps};}}
-  if(Number(s.hcLast)>0)out.hcLast=Number(s.hcLast);if(s.hrNow&&Number(s.hrNow.bpm)>0&&Number(s.hrNow.at)>0)out.hrNow={bpm:Number(s.hrNow.bpm),at:Number(s.hrNow.at)};
+    out.daily[d]={rc:Array.isArray(v.rc)?v.rc.map(Boolean):[],ready:rd,breaks:Number(v.breaks)||0,cal:v.cal===''||v.cal==null?'':Number(v.cal)||0,h:HABITS.map((_,i)=>!!h[i]),ex:ba(v.ex),wu:ba(v.wu),cd:ba(v.cd),meals:ba(v.meals),sets,load,pro,water:Number(v.water)||0,steps:v.steps===''||v.steps==null?'':Number(v.steps)||0,notes:String(v.notes||''),bed:/^\d{2}:\d{2}$/.test(v.bed||'')?v.bed:'',wake:/^\d{2}:\d{2}$/.test(v.wake||'')?v.wake:''};if(v.hc&&typeof v.hc==='object'){const o={};for(const k in v.hc){const x=v.hc[k];if(typeof x==='boolean')o[k]=x;else if(Number(x)>0||Number(x)<0)o[k]=Number(x)}out.daily[d].hc=o}}}
+  if(Number(s.hcLast)>0)out.hcLast=Number(s.hcLast);if(s.hrNow&&Number(s.hrNow.bpm)>0&&Number(s.hrNow.at)>0)out.hrNow={bpm:Number(s.hrNow.bpm),at:Number(s.hrNow.at)};if(s.vitals&&typeof s.vitals==='object'){out.vitals={};['spo2','resp','hrv','skin'].forEach(k=>{const x=s.vitals[k];if(x&&isFinite(Number(x.v))&&Number(x.at)>0)out.vitals[k]={v:Number(x.v),at:Number(x.at)}})}
   if(s.rest!=null)out.rest=Number(s.rest)||0;
   if(s.sound===false)out.sound=false;if(s.voice===false)out.voice=false;
   if(s.rings&&typeof s.rings==='object')out.rings={move:Number(s.rings.move)||500,exercise:Number(s.rings.exercise)||45,stand:Number(s.rings.stand)||8};
@@ -2878,7 +2878,7 @@ function renderTiles(){const box=$('oneTiles');if(!box)return;box.replaceChildre
   {const last=lastVal('sleep'),h=last?last.v:null,rec=last?state.daily[last.d]:null;
     box.append(oneTile('dark','health',`<div class="t-h">Sleep time</div>${ONE.art.moon}<div class="t-big">${h==null?'—':Math.floor(h)+'<small>h</small> '+Math.round((h%1)*60)+'<small>m</small>'}</div><div class="t-rows">${rec?`<span>Bed ${oneEsc(rec.bed)}</span><span>Up ${oneEsc(rec.wake)}</span>`:'<span>Log bedtime and wake-up in Today</span>'}</div>`))}
   /* food */
-  {const t=targets(),pro=(r.pro||[]).reduce((a,p)=>a+p.g,0);let next='';try{const ms=mealsFor(pre?START:d);const now=new Date(),mins=now.getHours()*60+now.getMinutes(),late=gymStart()===1170;
+  {const t=targets(),pro=Math.max((r.pro||[]).reduce((a,p)=>a+p.g,0),Math.round((r.hc&&r.hc.proG)||0));let next='';try{const ms=mealsFor(pre?START:d);const now=new Date(),mins=now.getHours()*60+now.getMinutes(),late=gymStart()===1170;
       const slots=[[420,'Breakfast'],[780,'Lunch'],[late?1245:1215,'Dinner']];const i=slots.findIndex(s=>mins<s[0]+60);const m=ms&&ms[i<0?0:i];next=(i<0?'Tomorrow: ':slots[i][1]+': ')+(m?(m.name||m.n||m[0]||''):'')}catch(e){}
     box.append(oneTile('c-orange','menu',`<div class="t-h">Food</div>${ONE.art.bowl}<div><div class="t-big">${pro}<small>/ ${t.p} g</small></div><div class="t-sub">protein today${next?' · '+oneEsc(next):''}</div></div>`))}
   /* water */
@@ -2948,6 +2948,8 @@ window.__hcData=function(x){HC.busy=false;if(!x||!x.ok){renderHC();if(!HC.quiet)
   for(const [d,v] of Object.entries(x.hrMin||{})){if(v>0){const r=touch(d);if(r)r.hc.hrMin=Math.round(v)}}
   for(const [d,v] of Object.entries(x.hrMax||{})){if(v>0){const r=touch(d);if(r)r.hc.hrMax=Math.round(v)}}
   if(Array.isArray(x.hrNow)&&x.hrNow[1]>0){const at=Number(x.hrNow[2])||Date.parse(x.hrNow[0]);if(!state.hrNow||state.hrNow.at!==at)n++;state.hrNow={bpm:Math.round(x.hrNow[1]),at}}
+  [['distKm','dist',100],['floors','floors',1],['kcalTotal','kcalT',1],['foodKcal','foodKcal',1],['proG','proG',1],['carbG','carbG',1],['fatG','fatG',1]].forEach(([k,f,m])=>{for(const [d,v] of Object.entries(x[k]||{})){if(v>0){const r=touch(d);if(r){const nv=Math.round(v*m)/m;if(r.hc[f]!==nv)n++;r.hc[f]=nv}}}});
+  state.vitals=state.vitals||{};['spo2','resp','hrv','skin'].forEach(k=>{if(Array.isArray(x[k])){const at=Number(x[k][2])||Date.parse(x[k][0]);if(!state.vitals[k]||state.vitals[k].at!==at)n++;state.vitals[k]={v:Number(x[k][1]),at}}});
   for(const [d,v] of Object.entries(x.water||{})){if(v>0){const r=touch(d);if(r&&v>(r.water||0)){r.water=Math.round(v*20)/20;n++}}}
   /* sleep: the longest session that ends on each day */
   const best={};(x.sleep||[]).forEach(([s,e])=>{const d=hcDay(e),len=(Date.parse(e)-Date.parse(s))||0;if(len>0&&(!best[d]||len>best[d].len))best[d]={s,e,len}});
@@ -2957,20 +2959,40 @@ window.__hcData=function(x){HC.busy=false;if(!x||!x.ok){renderHC();if(!HC.quiet)
   for(const [d,kg] of Object.entries(wd)){const i=state.progress.findIndex(p=>p.date===d);if(i<0){state.progress.push({date:d,weight:kg,waist:'',note:'Health Connect'});n++}else if(state.progress[i].note==='Health Connect'&&state.progress[i].weight!==kg){state.progress[i].weight=kg;n++}}
   state.progress.sort((a,b)=>a.date.localeCompare(b.date));
   state.hcLast=Date.now();HC.errs=Object.keys(x).filter(k=>/Err$/.test(k)).map(k=>k.replace('Err',''));
-  save();try{renderAll()}catch(e){}renderHC();if(!HC.quiet)toast(n?'Synced from Google Health · '+n+' updates':'Up to date with Google Health')};
+  save();try{renderAll()}catch(e){}renderHC();renderVitals();if(!HC.quiet)toast(n?'Synced from Google Health · '+n+' updates':'Up to date with Google Health')};
 window.__cherryResume=function(){if(hcGranted())hcSync(7,true)};
 /* live: check Google Health every 30 s while Cherry is on screen */
 setInterval(()=>{if(!document.hidden&&hcGranted())hcSync(2,true)},30000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&hcGranted())hcSync(7,true)});
 setInterval(()=>{const c=$('hcCard');if(c&&hcGranted()&&!HC.busy){const sm=c.querySelector('.hc-top small');if(sm)sm.textContent=hcLiveText()}},1000);
-function hcLiveText(){const n=hcGranted().split(',').length,t=HC.checked||state.hcLast;if(!t)return 'Connected · '+n+' of 8 data types';const s=Math.round((Date.now()-t)/1000);
-  return '● Live · checked '+(s<5?'just now':s<60?s+' s ago':Math.round(s/60)+' min ago')+' · '+n+' of 8 data types'}
+function hcLiveText(){const n=hcGranted().split(',').length,t=HC.checked||state.hcLast;if(!t)return 'Connected · '+n+' data types';const s=Math.round((Date.now()-t)/1000);
+  return '● Live · checked '+(s<5?'just now':s<60?s+' s ago':Math.round(s/60)+' min ago')+' · '+n+' data types'}
 /* Move and Exercise rings use real watch data when it's there */
 {const _mk=moveKcal;moveKcal=function(d){const r=state.daily[d],a=r&&r.hc&&r.hc.akcal;return a>0?a:_mk(d)};
  const _ex=exMin;exMin=function(d){const r=state.daily[d],a=r&&r.hc&&r.hc.ex;return Math.max(_ex(d),a>0?a:0)}}
 MET.rhr={name:'Resting heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.rhr?r.hc.rhr:null}};
+const hcv=k=>d=>{const r=state.daily[d];return r&&r.hc&&r.hc[k]?r.hc[k]:null};
+const vit=k=>d=>{const v=(state.vitals||{})[k];if(!v)return null;const dd=new Date(v.at),key=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');return key===d?v.v:null};
+{const _pg=MET.protein.get;MET.protein.get=d=>{const a=_pg(d),r=state.daily[d],h=r&&r.hc&&r.hc.proG;return h&&(!a||h>a)?Math.round(h):a}}
+MET.distance={name:'Distance',unit:'km',cat:'Activity',color:'#5B9BC4',get:hcv('dist')};
+MET.floors={name:'Floors',unit:'floors',cat:'Activity',color:'#6E9B5E',get:hcv('floors')};
+MET.kcalTotal={name:'Calories burned',unit:'kcal',cat:'Activity',color:'#E2621B',get:hcv('kcalT')};
+MET.foodKcal={name:'Food eaten',unit:'kcal',cat:'Nutrition',color:'#D98A2B',get:hcv('foodKcal')};
+MET.spo2={name:'Blood oxygen (SpO2)',unit:'%',cat:'Vitals',color:'#5B80AA',get:vit('spo2')};
+MET.resp={name:'Breathing rate',unit:'brpm',cat:'Vitals',color:'#6C6FB0',get:vit('resp')};
+MET.hrv={name:'Heart rate variability',unit:'ms',cat:'Vitals',color:'#9B7BB8',get:vit('hrv')};
+MET.skin={name:'Skin temperature',unit:'°C vs usual',cat:'Vitals',color:'#C4604E',get:vit('skin')};
 MET.hrNow={name:'Heart rate now',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const n=state.hrNow;if(!n)return null;const dd=new Date(n.at);const k=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');return k===d?n.bpm:null}};
 MET.hr={name:'Average heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.hr?r.hc.hr:null}};
+function vitalsList(){const V=state.vitals||{},rl=lastVal('rhr'),fresh=x=>x&&Date.now()-x.at<7*864e5;
+  return [['Resting heart rate',rl?rl.v:null,'bpm',v=>v>=40&&v<=100],
+    ['Blood oxygen',fresh(V.spo2)?V.spo2.v:null,'%',v=>v>=95],
+    ['Breathing rate',fresh(V.resp)?V.resp.v:null,'brpm',v=>v>=10&&v<=24],
+    ['Heart rate variability',fresh(V.hrv)?V.hrv.v:null,'ms',v=>v>=10],
+    ['Skin temperature',fresh(V.skin)?V.skin.v:null,'°C',v=>Math.abs(v)<=1.5]]}
+function renderVitals(){const h=$('health');if(!h)return;let c=$('vitCard');if(!c){c=document.createElement('div');c.className='ap-card';c.id='vitCard';const hc=$('hcCard');(hc||h.querySelector('.ap-title')).after(c)}
+  const L=vitalsList(),have=L.filter(x=>x[1]!=null),ok=have.filter(x=>x[3](x[1])).length;
+  c.innerHTML=`<div class="ap-card-h"><b>Vitals</b><span class="muted" style="font-size:13px">${have.length?ok+' of '+have.length+' in range':'No readings yet'}</span></div><div class="vit-grid">${L.map(([n,v,u,f])=>`<div class="vit${v!=null&&!f(v)?' off':''}"><small>${n}</small><b>${v==null?'—':(n==='Skin temperature'&&v>0?'+':'')+v}<span> ${v==null?'':u}</span></b><em>${v==null?'no data':f(v)?'in range':'outside usual'}</em></div>`).join('')}</div>`}
 function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup=hcSupported(),n=g?g.split(',').length:0;
   const st=!HC.app?'Works in the Cherry app on your phone.':!sup?'Your phone needs Android 14 or newer for Health Connect.':HC.busy&&!HC.quiet?'Syncing…':g?hcLiveText():'Not connected yet';
   box.innerHTML=`<div class="hc-top"><div class="hc-logo" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-7.5-10.4A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 7.5 2.6C19.5 16.4 12 21 12 21z" fill="#fff"/><path d="M6 12.5h3l1.5-3 2.5 6 1.5-3H18" stroke="#2FA84F" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><b>${IOS?'Apple Health':'Google Health · Health Connect'}</b><small>${st}</small></div></div>`;
@@ -2984,7 +3006,8 @@ function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup
 (function(){const health=$('health');if(!health)return;const c=document.createElement('div');c.className='ap-card hc-card';c.id='hcCard';
   const t=health.querySelector('.ap-title');if(t)t.after(c);else health.prepend(c);
   const st=document.createElement('style');st.textContent=`.hc-card .hc-top{display:flex;gap:12px;align-items:center}.hc-card .hc-top small{display:block;color:var(--muted);font-size:13px;margin-top:2px}.hc-logo{width:44px;height:44px;border-radius:14px;background:var(--t-green);display:grid;place-items:center;flex:none}.hc-logo svg{width:28px;height:28px}.hc-how{margin-top:12px;font-size:14px}.hc-how summary{cursor:pointer;font-weight:600;color:var(--accent)}.hc-how ol{padding-left:20px;margin:8px 0;display:grid;gap:6px}`;document.head.append(st);
-  renderHC();
+  const vs=document.createElement('style');vs.textContent='.vit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:10px}.vit{background:var(--t-card2);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;min-width:0}.vit small{font-size:12.5px;color:var(--muted)}.vit b{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}.vit b span{font-size:12px;font-weight:600;color:var(--muted)}.vit em{font-style:normal;font-size:12px;color:var(--good)}.vit.off em{color:var(--warn)}';document.head.append(vs);
+  renderHC();renderVitals();
   /* home tile: connect or heart rate */
   const _rt=renderTiles;renderTiles=function(){_rt();const box=$('oneTiles');if(!box)return;const g=hcGranted();
     if(!g){const t=oneTile('wide c-green','health',`<div class="t-h">${IOS?'Apple Health':'Google Health'}</div><div class="t-name">${IOS?'Connect Apple Health':HC.app?'Connect your Fitbit data':'Sync from Fitbit'}</div><div class="t-sub">${HC.app?'Steps, sleep, heart rate and weight fill in by themselves.':'Open Cherry on your phone to connect Health Connect.'}</div><svg class="t-ico" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="oaH1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E3FFE9"/><stop offset="1" stop-color="#7BE495"/></linearGradient></defs><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="url(#oaH1)"/><path d="M30 56h16l8-14 12 28 8-14h16" stroke="#1E8E3E" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
@@ -2994,7 +3017,14 @@ function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup
       const sub=fresh?('latest · '+ago+(last?' · resting '+last.v:'')):(last?'resting'+(hc.hr?' · avg today '+hc.hr:''):'No reading yet');
       const range=hc.hrMin&&hc.hrMax?`<div class="t-sub" style="opacity:.6">today ${hc.hrMin}–${hc.hrMax} bpm</div>`:'';
       const t=oneTile('dark','health',`<div class="t-h">Heart rate</div><svg class="t-ico" viewBox="0 0 120 120" style="width:56px;height:56px;right:10px;top:10px" aria-hidden="true"><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="#C4604E"/></svg><div class="t-big">${big}<small>bpm</small></div><div><div class="t-sub" style="opacity:.75">${sub}</div>${range}</div>`);
-      const sl=box.querySelector('.one-t:nth-child(3)');box.insertBefore(t,sl?sl.nextSibling:null)}};
+      const sl=box.querySelector('.one-t:nth-child(3)');box.insertBefore(t,sl?sl.nextSibling:null);
+      const L=vitalsList(),have=L.filter(x=>x[1]!=null);if(have.length){const ok=have.filter(x=>x[3](x[1])).length,V=state.vitals||{};
+        const bits=[V.spo2&&'SpO2 '+V.spo2.v+'%',V.resp&&V.resp.v+' brpm',V.hrv&&'HRV '+V.hrv.v+' ms',V.skin&&'skin '+(V.skin.v>0?'+':'')+V.skin.v+'°C'].filter(Boolean).join(' · ');
+        const vt=oneTile('dark','health',`<div class="t-h">Vitals</div><svg class="t-ico" viewBox="0 0 120 120" style="width:56px;height:56px;right:10px;top:10px" aria-hidden="true"><path d="M14 64h22l10-22 16 40 12-26 8 8h24" fill="none" stroke="#6E9B5E" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="t-big">${ok}<small>of ${have.length}</small></div><div class="t-sub" style="opacity:.75">${bits||'in range'}</div>`);t.after(vt)}}
+    {const r=state.daily[TODAY]||{},hc=r.hc||{};const st=[...box.querySelectorAll('.one-t')].find(x=>(x.querySelector('.t-h')||{}).textContent==='Steps');
+      if(st&&(hc.dist||hc.floors)){const sub=st.querySelector('.t-sub');if(sub)sub.textContent=[hc.dist&&hc.dist+' km',hc.floors&&hc.floors+' floors'].filter(Boolean).join(' · ')}
+      const ac=[...box.querySelectorAll('.one-t')].find(x=>(x.querySelector('.t-h')||{}).textContent==='Daily activity');
+      if(ac&&hc.kcalT){const rows=ac.querySelector('.t-rows');if(rows)rows.insertAdjacentHTML('beforeend',`<span>${hc.kcalT.toLocaleString('en-IN')} kcal burned</span>`)}}};
   renderTiles();
   if(hcGranted())setTimeout(()=>hcSync(14,true),800)})();
 /* Android back button: go back to Home first */
