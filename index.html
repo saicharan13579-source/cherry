@@ -5,7 +5,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>window.__cherryApp=true</script></head><body>
 <title>Cherry</title>
-<meta name="cherry-build" content="10">
+<meta name="cherry-build" content="11">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one daily cockpit up top (today's session + habits + weight trend), reference sections below, sticky pill nav */
@@ -1448,8 +1448,8 @@ function normalize(s){
     const pro=Array.isArray(v.pro)?v.pro.filter(p=>p&&Number(p.g)>0).map(p=>({n:String(p.n||'Other').slice(0,40),g:Number(p.g)})):[];
     const ba=x=>Array.isArray(x)?x.map(Boolean):[];
     const rd=v.ready&&typeof v.ready==='object'?{sleep:Number(v.ready.sleep)||0,sore:Number(v.ready.sore)||0,energy:Number(v.ready.energy)||0,fit:v.ready.fit===''||v.ready.fit==null?'':Number(v.ready.fit)}:null;
-    out.daily[d]={rc:Array.isArray(v.rc)?v.rc.map(Boolean):[],ready:rd,breaks:Number(v.breaks)||0,cal:v.cal===''||v.cal==null?'':Number(v.cal)||0,h:HABITS.map((_,i)=>!!h[i]),ex:ba(v.ex),wu:ba(v.wu),cd:ba(v.cd),meals:ba(v.meals),sets,load,pro,water:Number(v.water)||0,steps:v.steps===''||v.steps==null?'':Number(v.steps)||0,notes:String(v.notes||''),bed:/^\d{2}:\d{2}$/.test(v.bed||'')?v.bed:'',wake:/^\d{2}:\d{2}$/.test(v.wake||'')?v.wake:''};if(v.hc&&typeof v.hc==='object')out.daily[d].hc={akcal:Number(v.hc.akcal)||0,ex:Number(v.hc.ex)||0,hr:Number(v.hc.hr)||0,rhr:Number(v.hc.rhr)||0,sleep:!!v.hc.sleep,steps:!!v.hc.steps};}}
-  if(Number(s.hcLast)>0)out.hcLast=Number(s.hcLast);
+    out.daily[d]={rc:Array.isArray(v.rc)?v.rc.map(Boolean):[],ready:rd,breaks:Number(v.breaks)||0,cal:v.cal===''||v.cal==null?'':Number(v.cal)||0,h:HABITS.map((_,i)=>!!h[i]),ex:ba(v.ex),wu:ba(v.wu),cd:ba(v.cd),meals:ba(v.meals),sets,load,pro,water:Number(v.water)||0,steps:v.steps===''||v.steps==null?'':Number(v.steps)||0,notes:String(v.notes||''),bed:/^\d{2}:\d{2}$/.test(v.bed||'')?v.bed:'',wake:/^\d{2}:\d{2}$/.test(v.wake||'')?v.wake:''};if(v.hc&&typeof v.hc==='object')out.daily[d].hc={akcal:Number(v.hc.akcal)||0,ex:Number(v.hc.ex)||0,hr:Number(v.hc.hr)||0,rhr:Number(v.hc.rhr)||0,hrMin:Number(v.hc.hrMin)||0,hrMax:Number(v.hc.hrMax)||0,sleep:!!v.hc.sleep,steps:!!v.hc.steps};}}
+  if(Number(s.hcLast)>0)out.hcLast=Number(s.hcLast);if(s.hrNow&&Number(s.hrNow.bpm)>0&&Number(s.hrNow.at)>0)out.hrNow={bpm:Number(s.hrNow.bpm),at:Number(s.hrNow.at)};
   if(s.rest!=null)out.rest=Number(s.rest)||0;
   if(s.sound===false)out.sound=false;if(s.voice===false)out.voice=false;
   if(s.rings&&typeof s.rings==='object')out.rings={move:Number(s.rings.move)||500,exercise:Number(s.rings.exercise)||45,stand:Number(s.rings.stand)||8};
@@ -2945,6 +2945,9 @@ window.__hcData=function(x){HC.busy=false;if(!x||!x.ok){renderHC();if(!HC.quiet)
   for(const [d,v] of Object.entries(x.exMs||{})){if(v>0){const r=touch(d);if(r)r.hc.ex=Math.round(v/60000)}}
   for(const [d,v] of Object.entries(x.hr||{})){if(v>0){const r=touch(d);if(r)r.hc.hr=Math.round(v)}}
   for(const [d,v] of Object.entries(x.rhr||{})){if(v>0){const r=touch(d);if(r)r.hc.rhr=Math.round(v)}}
+  for(const [d,v] of Object.entries(x.hrMin||{})){if(v>0){const r=touch(d);if(r)r.hc.hrMin=Math.round(v)}}
+  for(const [d,v] of Object.entries(x.hrMax||{})){if(v>0){const r=touch(d);if(r)r.hc.hrMax=Math.round(v)}}
+  if(Array.isArray(x.hrNow)&&x.hrNow[1]>0){const at=Number(x.hrNow[2])||Date.parse(x.hrNow[0]);if(!state.hrNow||state.hrNow.at!==at)n++;state.hrNow={bpm:Math.round(x.hrNow[1]),at}}
   for(const [d,v] of Object.entries(x.water||{})){if(v>0){const r=touch(d);if(r&&v>(r.water||0)){r.water=Math.round(v*20)/20;n++}}}
   /* sleep: the longest session that ends on each day */
   const best={};(x.sleep||[]).forEach(([s,e])=>{const d=hcDay(e),len=(Date.parse(e)-Date.parse(s))||0;if(len>0&&(!best[d]||len>best[d].len))best[d]={s,e,len}});
@@ -2966,6 +2969,7 @@ function hcLiveText(){const n=hcGranted().split(',').length,t=HC.checked||state.
 {const _mk=moveKcal;moveKcal=function(d){const r=state.daily[d],a=r&&r.hc&&r.hc.akcal;return a>0?a:_mk(d)};
  const _ex=exMin;exMin=function(d){const r=state.daily[d],a=r&&r.hc&&r.hc.ex;return Math.max(_ex(d),a>0?a:0)}}
 MET.rhr={name:'Resting heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.rhr?r.hc.rhr:null}};
+MET.hrNow={name:'Heart rate now',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const n=state.hrNow;if(!n)return null;const dd=new Date(n.at);const k=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');return k===d?n.bpm:null}};
 MET.hr={name:'Average heart rate',unit:'bpm',cat:'Vitals',color:'#C4604E',get:d=>{const r=state.daily[d];return r&&r.hc&&r.hc.hr?r.hc.hr:null}};
 function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup=hcSupported(),n=g?g.split(',').length:0;
   const st=!HC.app?'Works in the Cherry app on your phone.':!sup?'Your phone needs Android 14 or newer for Health Connect.':HC.busy&&!HC.quiet?'Syncing…':g?hcLiveText():'Not connected yet';
@@ -2985,7 +2989,11 @@ function renderHC(){const box=$('hcCard');if(!box)return;const g=hcGranted(),sup
   const _rt=renderTiles;renderTiles=function(){_rt();const box=$('oneTiles');if(!box)return;const g=hcGranted();
     if(!g){const t=oneTile('wide c-green','health',`<div class="t-h">${IOS?'Apple Health':'Google Health'}</div><div class="t-name">${IOS?'Connect Apple Health':HC.app?'Connect your Fitbit data':'Sync from Fitbit'}</div><div class="t-sub">${HC.app?'Steps, sleep, heart rate and weight fill in by themselves.':'Open Cherry on your phone to connect Health Connect.'}</div><svg class="t-ico" viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="oaH1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E3FFE9"/><stop offset="1" stop-color="#7BE495"/></linearGradient></defs><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="url(#oaH1)"/><path d="M30 56h16l8-14 12 28 8-14h16" stroke="#1E8E3E" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`);
       if(HC.app)t.dataset.act='hc';box.insertBefore(t,box.children[1]||null)}
-    else{const r=state.daily[TODAY]||{},hc=r.hc||{},last=lastVal('rhr');const t=oneTile('dark','health',`<div class="t-h">Heart rate</div><svg class="t-ico" viewBox="0 0 120 120" style="width:56px;height:56px;right:10px;top:10px" aria-hidden="true"><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="#C4604E"/></svg><div class="t-big">${last?last.v:'—'}<small>bpm</small></div><div class="t-sub" style="opacity:.7">resting${hc.hr?' · avg today '+hc.hr:''}</div>`);
+    else{const r=state.daily[TODAY]||{},hc=r.hc||{},last=lastVal('rhr'),now=state.hrNow,fresh=now&&Date.now()-now.at<6*3600e3;
+      const ago=now?hcAgo(now.at):'';const big=fresh?now.bpm:(last?last.v:'—');
+      const sub=fresh?('latest · '+ago+(last?' · resting '+last.v:'')):(last?'resting'+(hc.hr?' · avg today '+hc.hr:''):'No reading yet');
+      const range=hc.hrMin&&hc.hrMax?`<div class="t-sub" style="opacity:.6">today ${hc.hrMin}–${hc.hrMax} bpm</div>`:'';
+      const t=oneTile('dark','health',`<div class="t-h">Heart rate</div><svg class="t-ico" viewBox="0 0 120 120" style="width:56px;height:56px;right:10px;top:10px" aria-hidden="true"><path d="M60 100S18 76 18 44a22 22 0 0 1 42-9 22 22 0 0 1 42 9c0 32-42 56-42 56z" fill="#C4604E"/></svg><div class="t-big">${big}<small>bpm</small></div><div><div class="t-sub" style="opacity:.75">${sub}</div>${range}</div>`);
       const sl=box.querySelector('.one-t:nth-child(3)');box.insertBefore(t,sl?sl.nextSibling:null)}};
   renderTiles();
   if(hcGranted())setTimeout(()=>hcSync(14,true),800)})();
