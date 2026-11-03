@@ -5,7 +5,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <script>window.__cherryApp=true</script></head><body>
 <title>Cherry</title>
-<meta name="cherry-build" content="12">
+<meta name="cherry-build" content="13">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one daily cockpit up top (today's session + habits + weight trend), reference sections below, sticky pill nav */
@@ -3151,6 +3151,34 @@ window.__cherryBack=function(){const sh=$('sheet');if(sh&&!sh.hidden){try{closeS
 /* start where you left off */
 try{const s=JSON.parse(localStorage.getItem('cherry_sub')||'{}');for(const k in s)if(ONE.screens[k]&&oneSecsOf(k).includes(s[k]))ONE.sub[k]=s[k]}catch(e){}
 {const cur=ONE.cur||'home';ONE.cur=null;oneShow(cur)}
+
+/* ===================== pull down to sync ===================== */
+(function(){const wrap=document.querySelector('.wrap');if(!wrap)return;
+  const css=document.createElement('style');css.textContent=`.ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 6px);z-index:60;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--t-card);border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.18);display:grid;place-items:center;opacity:0;transform:translateY(-60px);pointer-events:none;transition:opacity .2s}
+.ptr svg{width:22px;height:22px;color:var(--accent)}.ptr.spin svg{animation:ptrspin .8s linear infinite}@keyframes ptrspin{to{transform:rotate(360deg)}}
+.ptr.ok svg{animation:none}`;document.head.append(css);
+  const el=document.createElement('div');el.className='ptr';el.setAttribute('aria-hidden','true');
+  el.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>';document.body.append(el);
+  const NO='input,textarea,select,canvas,.sheet,.coach,.seg,#bodyCanvas,#body3d,.cs';
+  const TRIG=80;let y0=0,x0=0,pulling=false,armed=false,busy=false,d=0;
+  const show=(dist)=>{const p=Math.min(1,dist/TRIG);el.style.opacity=String(Math.min(1,p*1.2));el.style.transform=`translateY(${Math.min(dist,TRIG*1.3)*0.7-10}px) rotate(${p*270}deg)`};
+  const hide=()=>{el.style.transition='opacity .25s,transform .3s';el.style.opacity='0';el.style.transform='translateY(-60px)';setTimeout(()=>{el.style.transition='opacity .2s';el.classList.remove('spin','ok')},320)};
+  wrap.addEventListener('touchstart',e=>{if(busy||e.touches.length!==1||window.scrollY>2||e.target.closest(NO)){pulling=false;return}
+    pulling=true;armed=false;d=0;y0=e.touches[0].clientY;x0=e.touches[0].clientX;el.style.transition='none'},{passive:true});
+  wrap.addEventListener('touchmove',e=>{if(!pulling)return;const t=e.touches[0],dy=t.clientY-y0,dx=Math.abs(t.clientX-x0);
+    if(dy<=0||dx>dy||window.scrollY>2){if(d>0){d=0;show(0)}return}
+    d=dy*0.55;show(d);if(d>=TRIG&&!armed){armed=true;try{navigator.vibrate&&navigator.vibrate(10)}catch(x){}}else if(d<TRIG)armed=false},{passive:true});
+  const end=()=>{if(!pulling)return;pulling=false;if(!armed){hide();return}refresh()};
+  wrap.addEventListener('touchend',end,{passive:true});wrap.addEventListener('touchcancel',()=>{pulling=false;hide()},{passive:true});
+  function refresh(){busy=true;el.style.transition='transform .2s';el.style.transform='translateY(46px)';el.style.opacity='1';el.classList.add('spin');
+    const done=msg=>{if(!busy)return;busy=false;el.classList.remove('spin');el.classList.add('ok');if(msg)toast(msg);setTimeout(hide,350)};
+    if(typeof hcGranted==='function'&&hcGranted()){const was=window.__hcData;let t;
+      window.__hcData=function(x){window.__hcData=was;clearTimeout(t);HC.quiet=true;const snap=()=>JSON.stringify([state.daily,state.progress,state.vitals,state.hrNow]);const before=snap();was(x);
+        done(x&&x.ok?(snap()!==before?'Synced with Google Health':'Already up to date'):'Couldn\'t reach Google Health')};
+      t=setTimeout(()=>{window.__hcData=was;done('Google Health is taking a while, try again')},12000);
+      HC.busy=false;try{CherryApp.hcRead(14)}catch(x){window.__hcData=was;done('Couldn\'t reach Google Health')}}
+    else{try{renderAll()}catch(x){}setTimeout(()=>done(window.CherryApp&&window.CherryApp.hcSupported?'Refreshed · connect Google Health on the Health page to sync':'Refreshed'),500)}}
+  window.__cherryPull=refresh})();
 
 })();
 </script>
