@@ -4,7 +4,7 @@
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head><body>
 <title>Cherry</title>
-<meta name="cherry-build" content="13">
+<meta name="cherry-build" content="14">
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
 /* Layout: one daily cockpit up top (today's session + habits + weight trend), reference sections below, sticky pill nav */
@@ -3050,6 +3050,28 @@ function oneZoom(){let m='auto';try{m=localStorage.getItem('cherry_size')||'auto
     b.onclick=()=>{try{localStorage.setItem('cherry_size',k)}catch(e){}seg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));oneZoom();dispatchEvent(new Event('resize'));toast(k==='auto'?'Size follows your phone\'s font setting':t+' size')};seg.append(b)});
   r.append(l,seg);row.after(r);
   const p=document.createElement('p');p.className='muted';p.style.cssText='font-size:12.5px;margin:-14px 0 22px';p.textContent='Auto follows your phone\'s font size setting, a little smaller so more fits.';r.after(p)})();
+/* ===== automatic updates: apply right away when it's safe, show version in Settings ===== */
+const PAGE_BUILD=(()=>{const m=document.querySelector('meta[name="cherry-build"]');return m?Number(m.content)||0:0})();
+const BOOT_AT=Date.now();let lastTouch=0;['touchstart','keydown','input'].forEach(ev=>addEventListener(ev,()=>{lastTouch=Date.now()},{passive:true,capture:true}));
+{const _upd=window.__cherryUpdate;window.__cherryUpdate=function(b){
+  try{localStorage.setItem('cherry_updated_to',String(b))}catch(e){}
+  const typing=document.activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName);
+  const coach=document.querySelector('.coach:not([hidden]),.sheet:not([hidden])');
+  if(!typing&&!coach&&(Date.now()-BOOT_AT<15000||Date.now()-lastTouch>60000)){try{save()}catch(e){}try{CherryApp.reload()}catch(e){location.reload()}return}
+  _upd(b)}}
+(function(){let to=0;try{to=Number(localStorage.getItem('cherry_updated_to'))||0}catch(e){}
+  if(to&&to===PAGE_BUILD){try{localStorage.removeItem('cherry_updated_to')}catch(e){}setTimeout(()=>toast('Cherry updated to build '+PAGE_BUILD),900)}
+  const info=$('backupInfo');if(!info)return;const box=document.createElement('div');box.className='ap-card';box.style.margin='0 0 18px';
+  box.innerHTML='<div class="ap-card-h"><b>App version</b><span class="muted" style="font-size:13px">Cherry build '+PAGE_BUILD+'</span></div><p class="muted" id="updStatus" style="font-size:13px;margin:6px 0 10px">'+(window.CherryApp&&window.CherryApp.checkUpdate?'Updates install by themselves from your GitHub site.':'This page always shows the newest version.')+'</p>';
+  if(window.CherryApp&&window.CherryApp.checkUpdate){const b=document.createElement('button');b.type='button';b.className='ghost';b.textContent='Check for updates';
+    b.onclick=()=>{const st=$('updStatus');st.textContent='Checking…';try{CherryApp.checkUpdate()}catch(e){}
+      let n=0;const iv=setInterval(()=>{n++;let s='';try{s=String(CherryApp.updateStatus())}catch(e){}
+        if(/^latest/.test(s)){clearInterval(iv);st.textContent='You have the newest version (build '+(s.split(':')[1]||PAGE_BUILD)+').'}
+        else if(/^ready/.test(s)){clearInterval(iv);st.textContent='Update downloaded. Restarting…'}
+        else if(s==='offline'){clearInterval(iv);st.textContent='No internet right now. It will update next time you\'re online.'}
+        else if(n>20){clearInterval(iv);st.textContent='Couldn\'t check right now. Try again in a bit.'}},500)};box.append(b)}
+  const sec=info.closest('.sec-head');(sec||info).before(box)})();
+{const _res=window.__cherryResume;let lastChk=Date.now();window.__cherryResume=function(){try{_res&&_res()}catch(e){}if(window.CherryApp&&CherryApp.checkUpdate&&Date.now()-lastChk>20*60000){lastChk=Date.now();try{CherryApp.checkUpdate()}catch(e){}}}}
 
 /* ===================== Project Cherry — human touch ===================== */
 const CW_NAME='Cherry';
