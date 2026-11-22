@@ -44,7 +44,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--te);font-size:17px;
 .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
 
 /* glass recipe */
-.g,.rules li,nav.tabs,.week,.dish,.snack,.shop section,.times span{
+.g,.rules li,nav.tabs,.week,.dish,.snack,.shop section,.times span{font-family:var(--te),var(--en);
   background:linear-gradient(145deg,var(--glass-strong),var(--glass));
   -webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%);
   border:1px solid var(--edge-dim);
@@ -56,11 +56,11 @@ header.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:spac
 h1{font-family:var(--te-display);font-weight:400;font-size:clamp(2rem,6vw,2.8rem);line-height:1.2;margin:0;text-wrap:balance}
 h1 .en{display:block;font-size:.95rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:4px}
 .times{display:flex;flex-wrap:wrap;gap:6px}
-.times span{border-radius:999px;padding:3px 12px;font-size:.88rem;font-variant-numeric:tabular-nums;white-space:nowrap;box-shadow:inset 0 1px 0 var(--edge)}
+.times span{font-family:var(--te),var(--en);border-radius:999px;padding:3px 12px;font-size:.88rem;font-variant-numeric:tabular-nums;white-space:nowrap;box-shadow:inset 0 1px 0 var(--edge)}
 .times b{color:var(--accent)}
 .rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:0 0 20px;padding:0;list-style:none}
 .rules li{border-radius:18px;padding:10px 16px;line-height:1.45}
-.rules .en{display:block;font-size:.85rem}
+.rules .en{display:block;font-size:.92rem;color:var(--ink);opacity:.8}
 
 nav.tabs{position:sticky;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:5;display:flex;gap:4px;overflow-x:auto;padding:5px;margin-bottom:18px;border-radius:999px;scrollbar-width:none}
 nav.tabs::-webkit-scrollbar{display:none}
@@ -78,7 +78,7 @@ h2 .en{font-size:.95rem;margin-left:8px}
 table{border-collapse:collapse;width:100%;min-width:560px}
 th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--edge-dim);vertical-align:top;line-height:1.4}
 th{font-weight:600;font-size:.95rem;color:var(--soft)}
-th .en,td .en{display:block;font-size:.78rem}
+th .en,td .en{display:block;font-size:.86rem;color:var(--ink);opacity:.78}
 tr:last-child td{border-bottom:0}
 tr.is-today td{background:var(--today)}
 tr.is-today td:first-child b::after{content:" · ఈ రోజు";color:var(--mint);font-weight:600}
@@ -100,17 +100,19 @@ td button:hover{text-decoration-color:var(--accent)}
 .dish img{display:block;width:calc(100% - 16px);margin:8px 8px 0;border-radius:18px;aspect-ratio:16/10;object-fit:cover;max-width:100%}
 .dish .body{padding:14px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
 .dish h3{margin:0;font-size:1.25rem;line-height:1.3;font-weight:700}
-.dish h3 .en{display:block;font-size:.85rem;font-weight:600}
+.dish h3 .en{display:block;font-size:1rem;font-weight:600;color:var(--accent)}
 .need{display:flex;flex-wrap:wrap;gap:5px}
-.need span{background:var(--chip);border:1px solid var(--edge-dim);border-radius:10px;padding:1px 9px;font-size:.9rem}
+.need span i{display:block;font-style:normal;font-family:var(--en);font-size:.76rem;color:var(--soft);line-height:1.25;margin-bottom:2px}
+.need span{line-height:1.35;padding-top:3px!important;background:var(--chip);border:1px solid var(--edge-dim);border-radius:10px;padding:1px 9px;font-size:.9rem}
 .how{margin:0}
-.how .en{display:block;font-style:italic;font-size:.88rem;margin-top:2px;line-height:1.5}
+.how .en{display:block;font-size:.95rem;color:var(--ink);opacity:.82;margin-top:2px;line-height:1.5}
 .label{font-size:.78rem;font-weight:700;color:var(--accent);letter-spacing:.02em}
 a.pics{margin-top:auto;align-self:flex-start;font-family:var(--en);font-size:.88rem;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--edge-dim);background:var(--chip);border-radius:999px;padding:4px 14px;box-shadow:inset 0 1px 0 var(--edge)}
 a.pics:hover{border-color:var(--accent)}
 
 .snacks{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
 .snack{border-radius:20px;padding:14px 18px}
+.snack .sn{font-size:.95rem;color:var(--ink);opacity:.8}
 .snack .t{font-family:var(--en);font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
 .snack.no .t{color:var(--soft)}
 
@@ -121,7 +123,7 @@ a.pics:hover{border-color:var(--accent)}
 .shop label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer;line-height:1.4}
 .shop input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent);flex:0 0 auto}
 .shop input:checked + span{text-decoration:line-through;color:var(--soft)}
-.shop label .en{display:block;font-size:.8rem}
+.shop label .en{display:block;font-size:.9rem;color:var(--ink);opacity:.78}
 .shopbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
 .shopbar button{font:inherit;font-size:.9rem;border:1px solid var(--edge-dim);background:var(--glass-strong);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px)}
 .count{font-family:var(--en);font-size:.9rem;color:var(--soft);font-variant-numeric:tabular-nums}
@@ -133,7 +135,7 @@ a.pics:hover{border-color:var(--accent)}
 .tdm img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:15px;margin-bottom:6px}
 .tdm .label,.tdm b,.tdm .en{padding-inline:6px}
 .tdm b{font-size:1.2rem;line-height:1.3}
-.tdm .en{font-size:.85rem}
+.tdm .en{font-size:.98rem;font-weight:600;color:var(--accent)}
 .wkbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 12px}
 .wkbar div{text-align:center;line-height:1.35}
 .wkbar .en{display:block;font-size:.82rem}
@@ -150,7 +152,7 @@ footer{margin-top:28px;font-family:var(--en);font-size:.82rem;color:var(--soft)}
   <header class="top">
     <h1>అమ్మ వంటల పుస్తకం<span class="en">Amma's kitchen · Cherry's meals</span></h1>
     <div class="times" aria-label="Meal times">
-      <span>టిఫిన్ <b>7:00</b></span><span>స్నాక్ <b>10:30</b></span><span>భోజనం <b>1:00</b></span><span>జిమ్ ముందు <b>4:30</b></span><span>రాత్రి <b>8:30</b></span>
+      <span>టిఫిన్ Breakfast <b>7:00</b></span><span>స్నాక్ Snack <b>10:30</b></span><span>భోజనం Lunch <b>1:00</b></span><span>జిమ్ ముందు Pre-gym <b>4:30</b></span><span>రాత్రి Dinner <b>8:30</b></span>
     </div>
   </header>
 
@@ -170,36 +172,36 @@ const IMG={oats:"data:image/webp;base64,UklGRhh3AABXRUJQVlA4IAx3AADw6gGdASowAl0B
 const D={
 
 bf:[
- {id:"oats",te:"ఓట్స్",en:"Oats / overnight oats",img:"oats",q:"oats porridge banana",need:["ఓట్స్ ¾ కప్","పాలు 1 కప్","వే 1 స్కూప్","అరటిపండు","చియా 1 చెంచా"],how:"ఓట్స్ పాలలో 5 నిమిషాలు ఉడికించి, గోరువెచ్చగా అయ్యాక వే, పండు కలపండి. ఓవర్‌నైట్ అయితే రాత్రే కలిపి ఫ్రిజ్‌లో పెట్టండి.",hen:"Cook oats in milk 5 min, then stir in whey and fruit. Overnight: mix at night, keep in fridge."},
- {id:"pesarattu",te:"పెసరట్టు + పనీర్",en:"Pesarattu + paneer",q:"pesarattu",need:["పెసలు ½ కప్ (నానబెట్టినవి)","అల్లం","మిర్చి","పనీర్ 80 g"],how:"పెసలు అల్లం, మిర్చితో రుబ్బి పలుచని అట్లు వేయండి. పైన తురిమిన పనీర్ చల్లండి.",hen:"Grind soaked moong with ginger and chilli, make thin dosas, top with grated paneer."},
- {id:"pbhurji",te:"పనీర్ బుర్జీ",en:"Paneer bhurji",img:"bhurji",q:"paneer bhurji",need:["పనీర్ 150 g","ఉల్లి","టమాటా","మిర్చి","2 చపాతీలు"],how:"ఉల్లి, టమాటా వేయించి, పనీర్ చిదిమి వేసి 3 నిమిషాలు కలపండి.",hen:"Fry onion and tomato, crumble in paneer, stir 3 min."},
- {id:"idli",te:"ఇడ్లీ సాంబార్ + గుడ్లు",en:"Idli sambar + eggs",q:"idli sambar boiled eggs",need:["3 ఇడ్లీలు","సాంబార్ 1 గిన్నె","3 గుడ్లు"],how:"మామూలు ఇడ్లీ, సాంబార్. గుడ్లు 10 నిమిషాలు ఉడకబెట్టండి. చట్నీ కొంచెమే.",hen:"Usual idli and sambar, 3 boiled eggs, little chutney."},
- {id:"poha",te:"అటుకుల ఉప్మా",en:"Poha",q:"poha",need:["అటుకులు 1 కప్","ఉల్లి","బఠాణీలు","పల్లీలు 1 చెంచా","పెరుగు 1 గిన్నె"],how:"అటుకులు కడిగి వడకట్టండి. ఉల్లి, బఠాణీలు వేయించి అటుకులు, పసుపు, ఉప్పు కలిపి 2 నిమిషాలు. పెరుగుతో.",hen:"Rinse poha; fry onion and peas, add poha, turmeric, salt, 2 min. Serve with curd."},
- {id:"ragi",te:"రాగి దోశ + గుడ్డు బుర్జీ",en:"Ragi dosa + egg bhurji",q:"ragi dosa",need:["రాగి పిండి ½ కప్","3 గుడ్లు","ఉల్లి","మిర్చి"],how:"రాగి పిండి నీళ్లు, ఉప్పుతో పలుచగా కలిపి అట్లు వేయండి. గుడ్లు ఉల్లితో బుర్జీ చేయండి.",hen:"Mix ragi flour thin with water and salt, make dosas. Scramble eggs with onion."},
- {id:"omelette",te:"మసాలా ఆమ్లెట్",en:"Masala omelette",q:"masala omelette",need:["3 గుడ్లు + 2 తెల్లసొనలు","ఉల్లి","టమాటా","మిర్చి","1 చపాతీ"],how:"అన్నీ కలిపి గిలకొట్టి, పెనం మీద రెండు వైపులా కాల్చండి.",hen:"Beat everything together, cook both sides on the tawa."},
- {id:"chilla",te:"శనగపిండి అట్టు",en:"Besan chilla",q:"besan chilla paneer",need:["శనగపిండి ½ కప్","ఉల్లి","టమాటా","కొత్తిమీర","పనీర్ 50 g"],how:"పిండిని నీళ్లు, ఉప్పు, కూరగాయలతో కలిపి అట్లు వేయండి. లోపల తురిమిన పనీర్ పెట్టండి.",hen:"Mix besan with water, salt and veggies, cook like dosas, fill with paneer."}
+ {id:"oats",te:"ఓట్స్",en:"Oats / overnight oats",img:"oats",q:"oats porridge banana",ne:["Oats ¾ cup", "Milk 1 cup", "Whey 1 scoop", "Banana", "Chia 1 spoon"],need:["ఓట్స్ ¾ కప్","పాలు 1 కప్","వే 1 స్కూప్","అరటిపండు","చియా 1 చెంచా"],how:"ఓట్స్ పాలలో 5 నిమిషాలు ఉడికించి, గోరువెచ్చగా అయ్యాక వే, పండు కలపండి. ఓవర్‌నైట్ అయితే రాత్రే కలిపి ఫ్రిజ్‌లో పెట్టండి.",hen:"Cook oats in milk 5 min, then stir in whey and fruit. Overnight: mix at night, keep in fridge."},
+ {id:"pesarattu",te:"పెసరట్టు + పనీర్",en:"Pesarattu + paneer",q:"pesarattu",ne:["Whole moong ½ cup (soaked)", "Ginger", "Green chilli", "Paneer 80 g"],need:["పెసలు ½ కప్ (నానబెట్టినవి)","అల్లం","మిర్చి","పనీర్ 80 g"],how:"పెసలు అల్లం, మిర్చితో రుబ్బి పలుచని అట్లు వేయండి. పైన తురిమిన పనీర్ చల్లండి.",hen:"Grind soaked moong with ginger and chilli, make thin dosas, top with grated paneer."},
+ {id:"pbhurji",te:"పనీర్ బుర్జీ",en:"Paneer bhurji",img:"bhurji",q:"paneer bhurji",ne:["Paneer 150 g", "Onion", "Tomato", "Green chilli", "2 rotis"],need:["పనీర్ 150 g","ఉల్లి","టమాటా","మిర్చి","2 చపాతీలు"],how:"ఉల్లి, టమాటా వేయించి, పనీర్ చిదిమి వేసి 3 నిమిషాలు కలపండి.",hen:"Fry onion and tomato, crumble in paneer, stir 3 min."},
+ {id:"idli",te:"ఇడ్లీ సాంబార్ + గుడ్లు",en:"Idli sambar + eggs",q:"idli sambar boiled eggs",ne:["3 idlis", "Sambar 1 katori", "3 eggs"],need:["3 ఇడ్లీలు","సాంబార్ 1 గిన్నె","3 గుడ్లు"],how:"మామూలు ఇడ్లీ, సాంబార్. గుడ్లు 10 నిమిషాలు ఉడకబెట్టండి. చట్నీ కొంచెమే.",hen:"Usual idli and sambar, 3 boiled eggs, little chutney."},
+ {id:"poha",te:"అటుకుల ఉప్మా",en:"Poha",q:"poha",ne:["Poha 1 cup", "Onion", "Peas", "Peanuts 1 spoon", "Curd 1 katori"],need:["అటుకులు 1 కప్","ఉల్లి","బఠాణీలు","పల్లీలు 1 చెంచా","పెరుగు 1 గిన్నె"],how:"అటుకులు కడిగి వడకట్టండి. ఉల్లి, బఠాణీలు వేయించి అటుకులు, పసుపు, ఉప్పు కలిపి 2 నిమిషాలు. పెరుగుతో.",hen:"Rinse poha; fry onion and peas, add poha, turmeric, salt, 2 min. Serve with curd."},
+ {id:"ragi",te:"రాగి దోశ + గుడ్డు బుర్జీ",en:"Ragi dosa + egg bhurji",q:"ragi dosa",ne:["Ragi flour ½ cup", "3 eggs", "Onion", "Green chilli"],need:["రాగి పిండి ½ కప్","3 గుడ్లు","ఉల్లి","మిర్చి"],how:"రాగి పిండి నీళ్లు, ఉప్పుతో పలుచగా కలిపి అట్లు వేయండి. గుడ్లు ఉల్లితో బుర్జీ చేయండి.",hen:"Mix ragi flour thin with water and salt, make dosas. Scramble eggs with onion."},
+ {id:"omelette",te:"మసాలా ఆమ్లెట్",en:"Masala omelette",q:"masala omelette",ne:["3 eggs + 2 whites", "Onion", "Tomato", "Green chilli", "1 roti"],need:["3 గుడ్లు + 2 తెల్లసొనలు","ఉల్లి","టమాటా","మిర్చి","1 చపాతీ"],how:"అన్నీ కలిపి గిలకొట్టి, పెనం మీద రెండు వైపులా కాల్చండి.",hen:"Beat everything together, cook both sides on the tawa."},
+ {id:"chilla",te:"శనగపిండి అట్టు",en:"Besan chilla",q:"besan chilla paneer",ne:["Besan ½ cup", "Onion", "Tomato", "Coriander", "Paneer 50 g"],need:["శనగపిండి ½ కప్","ఉల్లి","టమాటా","కొత్తిమీర","పనీర్ 50 g"],how:"పిండిని నీళ్లు, ఉప్పు, కూరగాయలతో కలిపి అట్లు వేయండి. లోపల తురిమిన పనీర్ పెట్టండి.",hen:"Mix besan with water, salt and veggies, cook like dosas, fill with paneer."}
 ],
 lu:[
- {id:"soyaveg",te:"సోయా కూర + చపాతీ",en:"Soya veg curry + roti",q:"soya chunks vegetable curry",need:["సోయా 1 కప్","కూరగాయలు 1 కప్","ఉల్లి","టమాటా","2 చపాతీలు"],how:"సోయా 5 నిమిషాలు ఉడకబెట్టి పిండండి. ఉల్లి-టమాటా మసాలాలో కూరగాయలు, సోయా వేసి 10 నిమిషాలు.",hen:"Boil and squeeze soya; cook with veggies in onion-tomato masala 10 min."},
- {id:"pcurry",te:"పనీర్ కూర + చపాతీ",en:"Paneer curry + roti",q:"paneer curry with roti",need:["పనీర్ 150 g","ఉల్లి","2 టమాటాలు","కసూరి మేథీ","2 చపాతీలు"],how:"ఉల్లి-టమాటా మసాలాలో ½ కప్ నీళ్లు, పనీర్ వేసి 5 నిమిషాలు. క్రీమ్ వద్దు.",hen:"Onion-tomato masala, ½ cup water, paneer, 5 min. No cream."},
- {id:"dalrice",te:"పప్పు అన్నం + టోఫు",en:"Dal rice + tofu",q:"dal rice tofu",need:["కందిపప్పు ¼ కప్","టోఫు 150 g","అన్నం 1 చిన్న గిన్నె"],how:"మామూలు టమాటా పప్పు. టోఫు ముక్కలు ఉప్పు, కారంతో పెనం మీద కాల్చండి.",hen:"Usual tomato dal; tawa-fry tofu with salt and chilli."},
- {id:"tbhurji",te:"టోఫు బుర్జీ + పప్పు",en:"Tofu bhurji + dal",q:"tofu bhurji",need:["టోఫు 150 g","ఉల్లి","టమాటా","పప్పు 1 గిన్నె","2 చపాతీలు"],how:"పనీర్ బుర్జీ లాగే, పనీర్ బదులు టోఫు చిదిమి వేయండి.",hen:"Same as paneer bhurji, with tofu."},
- {id:"pulao",te:"పనీర్ పులావ్ + రైతా",en:"Paneer pulao + raita",q:"paneer pulao raita",need:["బాస్మతి ¼ కప్","పనీర్ 100 g","కూరగాయలు","పెరుగు","కీరదోస"],how:"పనీర్ పెరుగు-మసాలాలో 15 నిమిషాలు ఉంచి పెనం మీద కాల్చండి. వెజ్ పులావ్ (2 విషిల్స్) మీద వేయండి. కీరదోస పెరుగుతో రైతా.",hen:"Marinate paneer 15 min, roast, put on veg pulao (2 whistles). Cucumber raita."},
- {id:"khichdi",te:"పెసరపప్పు కిచిడీ + గుడ్లు",en:"Moong khichdi + eggs",q:"moong dal khichdi",need:["బియ్యం ¼ కప్","పెసరపప్పు ¼ కప్","2 గుడ్లు","పెరుగు"],how:"జీలకర్ర తాలింపు, 3 కప్పుల నీళ్లు, పసుపు, ఉప్పు వేసి కుక్కర్‌లో 4 విషిల్స్. ఉడికిన గుడ్లు, పెరుగుతో.",hen:"Temper, add 3 cups water, 4 whistles. With boiled eggs and curd."},
- {id:"sambar",te:"సాంబార్ అన్నం + గుడ్లు",en:"Sambar rice + eggs",q:"sambar rice beans poriyal",need:["అన్నం 1 చిన్న గిన్నె","సాంబార్","బీన్స్ కూర","3 గుడ్లు"],how:"మామూలు సాంబార్, బీన్స్ కూర (కొబ్బరి కొంచెమే). 3 ఉడికిన గుడ్లు.",hen:"Usual sambar and beans fry, little coconut, 3 boiled eggs."},
- {id:"rajma",te:"రాజ్మా అన్నం",en:"Rajma rice",img:"rajma",q:"rajma chawal",need:["రాజ్మా ¼ కప్","ఉల్లి","2 టమాటాలు","అన్నం","పెరుగు"],how:"రాత్రి నానబెట్టి, కుక్కర్‌లో 6–8 విషిల్స్. పూర్తిగా మెత్తగా అవ్వాలి. మసాలాలో 10 నిమిషాలు.",hen:"Soak overnight, 6–8 whistles until fully soft, simmer in masala 10 min."},
- {id:"chana",te:"శనగల కూర + చపాతీ",en:"Chana masala + roti",q:"chana masala roti",need:["కాబూలీ శనగలు ¼ కప్","ఉల్లి","2 టమాటాలు","చనా మసాలా","2 చపాతీలు"],how:"రాత్రి నానబెట్టి 5–6 విషిల్స్. ఉల్లి-టమాటా మసాలాలో 10 నిమిషాలు.",hen:"Soak overnight, 5–6 whistles, simmer in masala 10 min."}
+ {id:"soyaveg",te:"సోయా కూర + చపాతీ",en:"Soya veg curry + roti",q:"soya chunks vegetable curry",ne:["Soya chunks 1 cup", "Vegetables 1 cup", "Onion", "Tomato", "2 rotis"],need:["సోయా 1 కప్","కూరగాయలు 1 కప్","ఉల్లి","టమాటా","2 చపాతీలు"],how:"సోయా 5 నిమిషాలు ఉడకబెట్టి పిండండి. ఉల్లి-టమాటా మసాలాలో కూరగాయలు, సోయా వేసి 10 నిమిషాలు.",hen:"Boil and squeeze soya; cook with veggies in onion-tomato masala 10 min."},
+ {id:"pcurry",te:"పనీర్ కూర + చపాతీ",en:"Paneer curry + roti",q:"paneer curry with roti",ne:["Paneer 150 g", "Onion", "2 tomatoes", "Kasuri methi", "2 rotis"],need:["పనీర్ 150 g","ఉల్లి","2 టమాటాలు","కసూరి మేథీ","2 చపాతీలు"],how:"ఉల్లి-టమాటా మసాలాలో ½ కప్ నీళ్లు, పనీర్ వేసి 5 నిమిషాలు. క్రీమ్ వద్దు.",hen:"Onion-tomato masala, ½ cup water, paneer, 5 min. No cream."},
+ {id:"dalrice",te:"పప్పు అన్నం + టోఫు",en:"Dal rice + tofu",q:"dal rice tofu",ne:["Toor dal ¼ cup", "Tofu 150 g", "Rice 1 small katori"],need:["కందిపప్పు ¼ కప్","టోఫు 150 g","అన్నం 1 చిన్న గిన్నె"],how:"మామూలు టమాటా పప్పు. టోఫు ముక్కలు ఉప్పు, కారంతో పెనం మీద కాల్చండి.",hen:"Usual tomato dal; tawa-fry tofu with salt and chilli."},
+ {id:"tbhurji",te:"టోఫు బుర్జీ + పప్పు",en:"Tofu bhurji + dal",q:"tofu bhurji",ne:["Tofu 150 g", "Onion", "Tomato", "Dal 1 katori", "2 rotis"],need:["టోఫు 150 g","ఉల్లి","టమాటా","పప్పు 1 గిన్నె","2 చపాతీలు"],how:"పనీర్ బుర్జీ లాగే, పనీర్ బదులు టోఫు చిదిమి వేయండి.",hen:"Same as paneer bhurji, with tofu."},
+ {id:"pulao",te:"పనీర్ పులావ్ + రైతా",en:"Paneer pulao + raita",q:"paneer pulao raita",ne:["Basmati ¼ cup", "Paneer 100 g", "Vegetables", "Curd", "Cucumber"],need:["బాస్మతి ¼ కప్","పనీర్ 100 g","కూరగాయలు","పెరుగు","కీరదోస"],how:"పనీర్ పెరుగు-మసాలాలో 15 నిమిషాలు ఉంచి పెనం మీద కాల్చండి. వెజ్ పులావ్ (2 విషిల్స్) మీద వేయండి. కీరదోస పెరుగుతో రైతా.",hen:"Marinate paneer 15 min, roast, put on veg pulao (2 whistles). Cucumber raita."},
+ {id:"khichdi",te:"పెసరపప్పు కిచిడీ + గుడ్లు",en:"Moong khichdi + eggs",q:"moong dal khichdi",ne:["Rice ¼ cup", "Moong dal ¼ cup", "2 eggs", "Curd"],need:["బియ్యం ¼ కప్","పెసరపప్పు ¼ కప్","2 గుడ్లు","పెరుగు"],how:"జీలకర్ర తాలింపు, 3 కప్పుల నీళ్లు, పసుపు, ఉప్పు వేసి కుక్కర్‌లో 4 విషిల్స్. ఉడికిన గుడ్లు, పెరుగుతో.",hen:"Temper, add 3 cups water, 4 whistles. With boiled eggs and curd."},
+ {id:"sambar",te:"సాంబార్ అన్నం + గుడ్లు",en:"Sambar rice + eggs",q:"sambar rice beans poriyal",ne:["Rice 1 small katori", "Sambar", "Beans fry", "3 eggs"],need:["అన్నం 1 చిన్న గిన్నె","సాంబార్","బీన్స్ కూర","3 గుడ్లు"],how:"మామూలు సాంబార్, బీన్స్ కూర (కొబ్బరి కొంచెమే). 3 ఉడికిన గుడ్లు.",hen:"Usual sambar and beans fry, little coconut, 3 boiled eggs."},
+ {id:"rajma",te:"రాజ్మా అన్నం",en:"Rajma rice",img:"rajma",q:"rajma chawal",ne:["Rajma ¼ cup", "Onion", "2 tomatoes", "Rice", "Curd"],need:["రాజ్మా ¼ కప్","ఉల్లి","2 టమాటాలు","అన్నం","పెరుగు"],how:"రాత్రి నానబెట్టి, కుక్కర్‌లో 6–8 విషిల్స్. పూర్తిగా మెత్తగా అవ్వాలి. మసాలాలో 10 నిమిషాలు.",hen:"Soak overnight, 6–8 whistles until fully soft, simmer in masala 10 min."},
+ {id:"chana",te:"శనగల కూర + చపాతీ",en:"Chana masala + roti",q:"chana masala roti",ne:["Chickpeas ¼ cup", "Onion", "2 tomatoes", "Chana masala", "2 rotis"],need:["కాబూలీ శనగలు ¼ కప్","ఉల్లి","2 టమాటాలు","చనా మసాలా","2 చపాతీలు"],how:"రాత్రి నానబెట్టి 5–6 విషిల్స్. ఉల్లి-టమాటా మసాలాలో 10 నిమిషాలు.",hen:"Soak overnight, 5–6 whistles, simmer in masala 10 min."}
 ],
 di:[
- {id:"tikka",te:"పనీర్ టిక్కా + చపాతీ",en:"Paneer tikka + roti",q:"paneer tikka tawa",need:["పనీర్ 150 g","పెరుగు 2 చెంచాలు","టిక్కా మసాలా","ఉల్లి","క్యాప్సికం","2 చపాతీలు"],how:"అన్నీ పెరుగు-మసాలాలో 15 నిమిషాలు ఉంచి, పెనం మీద కాల్చండి.",hen:"Marinate 15 min in curd and masala, roast on the tawa."},
- {id:"soyarice",te:"సోయా కూర + అన్నం",en:"Soya curry + rice",q:"soya chunks curry rice",need:["సోయా 1 కప్","ఉల్లి","2 టమాటాలు","అన్నం 1 చిన్న గిన్నె"],how:"సోయా ఉడకబెట్టి పిండి, మసాలాలో ½ కప్ నీళ్లతో 10 నిమిషాలు.",hen:"Boil and squeeze soya, cook in masala with ½ cup water 10 min."},
- {id:"palak",te:"పాలక్ పనీర్ + చపాతీ",en:"Palak paneer + roti",q:"palak paneer",need:["పాలకూర 1 కట్ట","పనీర్ 150 g","ఉల్లి","వెల్లుల్లి","2 చపాతీలు"],how:"పాలకూర 2 నిమిషాలు ఉడకబెట్టి రుబ్బండి. ఉల్లి, వెల్లుల్లి వేయించి పాలకూర, పనీర్ వేసి 5 నిమిషాలు.",hen:"Boil spinach 2 min and grind; fry onion-garlic, add spinach and paneer, 5 min."},
- {id:"keema",te:"సోయా కీమా + చపాతీ",en:"Soya keema + roti",q:"soya keema",need:["సోయా రవ్వ 1 కప్","ఉల్లి","టమాటా","బఠాణీలు ½ కప్","2 చపాతీలు"],how:"రవ్వ వేడి నీళ్లలో 10 నిమిషాలు నానబెట్టి పిండండి. మసాలాలో బఠాణీలతో 8 నిమిషాలు పొడిగా వేయించండి.",hen:"Soak granules 10 min, squeeze, dry-fry in masala with peas 8 min."},
- {id:"bowl",te:"శనగలు పనీర్ బౌల్",en:"Chana paneer bowl",q:"chickpea paneer salad bowl",need:["ఉడికిన శనగలు 1 కప్","పనీర్ 100 g","కీరదోస","టమాటా","ఉల్లి","నిమ్మకాయ"],how:"పనీర్ పెనం మీద కాల్చండి. అన్నీ చిన్న ముక్కలు చేసి నిమ్మరసం, ఉప్పు, చాట్ మసాలాతో కలపండి.",hen:"Roast paneer; chop everything small, mix with lemon, salt, chaat masala."},
- {id:"tofu",te:"టోఫు ఫ్రై + అన్నం",en:"Tofu stir-fry + rice",img:"bowl",q:"tofu vegetable stir fry rice",need:["టోఫు 200 g","క్యాప్సికం","క్యాబేజీ","క్యారెట్","సోయా సాస్ 1 చెంచా","అన్నం 1 చిన్న గిన్నె"],how:"టోఫు తుడిచి పెనం మీద బంగారు రంగు వచ్చేవరకు కాల్చండి. కూరగాయలు పెద్ద మంట మీద 3 నిమిషాలు వేయించి, టోఫు, సోయా సాస్ కలపండి.",hen:"Pat tofu dry, roast golden; stir-fry veggies 3 min on high, toss with tofu and soy sauce."},
- {id:"dal",te:"పప్పు + టోఫు",en:"Dal tadka + tofu",q:"dal tadka",need:["పప్పు ⅓ కప్","టోఫు 150 g","జీలకర్ర","వెల్లుల్లి","ఎండుమిర్చి","1 చపాతీ"],how:"పప్పు 3 విషిల్స్. తాలింపు పెట్టి, టోఫు ముక్కలు వేసి 3 నిమిషాలు.",hen:"Dal 3 whistles, add the tadka and tofu, 3 min."},
- {id:"eggcurry",te:"గుడ్డు కూర + చపాతీ",en:"Egg curry + roti",q:"egg curry roti",need:["3 గుడ్లు","ఉల్లి","2 టమాటాలు","2 చపాతీలు"],how:"గుడ్లు 10 నిమిషాలు ఉడకబెట్టి, మసాలాలో ½ కప్ నీళ్లతో 5 నిమిషాలు.",hen:"Boil eggs 10 min, cook in masala with ½ cup water 5 min."},
- {id:"eggbhurji",te:"గుడ్డు బుర్జీ + చపాతీ",en:"Egg bhurji + roti",q:"egg bhurji roti",need:["3 గుడ్లు + 2 తెల్లసొనలు","ఉల్లి","టమాటా","మిర్చి","2 చపాతీలు"],how:"ఉల్లి, టమాటా వేయించి, గుడ్లు కొట్టి వేసి 2 నిమిషాలు కలపండి.",hen:"Fry onion and tomato, add beaten eggs, stir 2 min."}
+ {id:"tikka",te:"పనీర్ టిక్కా + చపాతీ",en:"Paneer tikka + roti",q:"paneer tikka tawa",ne:["Paneer 150 g", "Curd 2 spoons", "Tikka masala", "Onion", "Capsicum", "2 rotis"],need:["పనీర్ 150 g","పెరుగు 2 చెంచాలు","టిక్కా మసాలా","ఉల్లి","క్యాప్సికం","2 చపాతీలు"],how:"అన్నీ పెరుగు-మసాలాలో 15 నిమిషాలు ఉంచి, పెనం మీద కాల్చండి.",hen:"Marinate 15 min in curd and masala, roast on the tawa."},
+ {id:"soyarice",te:"సోయా కూర + అన్నం",en:"Soya curry + rice",q:"soya chunks curry rice",ne:["Soya chunks 1 cup", "Onion", "2 tomatoes", "Rice 1 small katori"],need:["సోయా 1 కప్","ఉల్లి","2 టమాటాలు","అన్నం 1 చిన్న గిన్నె"],how:"సోయా ఉడకబెట్టి పిండి, మసాలాలో ½ కప్ నీళ్లతో 10 నిమిషాలు.",hen:"Boil and squeeze soya, cook in masala with ½ cup water 10 min."},
+ {id:"palak",te:"పాలక్ పనీర్ + చపాతీ",en:"Palak paneer + roti",q:"palak paneer",ne:["Spinach 1 bunch", "Paneer 150 g", "Onion", "Garlic", "2 rotis"],need:["పాలకూర 1 కట్ట","పనీర్ 150 g","ఉల్లి","వెల్లుల్లి","2 చపాతీలు"],how:"పాలకూర 2 నిమిషాలు ఉడకబెట్టి రుబ్బండి. ఉల్లి, వెల్లుల్లి వేయించి పాలకూర, పనీర్ వేసి 5 నిమిషాలు.",hen:"Boil spinach 2 min and grind; fry onion-garlic, add spinach and paneer, 5 min."},
+ {id:"keema",te:"సోయా కీమా + చపాతీ",en:"Soya keema + roti",q:"soya keema",ne:["Soya granules 1 cup", "Onion", "Tomato", "Peas ½ cup", "2 rotis"],need:["సోయా రవ్వ 1 కప్","ఉల్లి","టమాటా","బఠాణీలు ½ కప్","2 చపాతీలు"],how:"రవ్వ వేడి నీళ్లలో 10 నిమిషాలు నానబెట్టి పిండండి. మసాలాలో బఠాణీలతో 8 నిమిషాలు పొడిగా వేయించండి.",hen:"Soak granules 10 min, squeeze, dry-fry in masala with peas 8 min."},
+ {id:"bowl",te:"శనగలు పనీర్ బౌల్",en:"Chana paneer bowl",q:"chickpea paneer salad bowl",ne:["Boiled chickpeas 1 cup", "Paneer 100 g", "Cucumber", "Tomato", "Onion", "Lemon"],need:["ఉడికిన శనగలు 1 కప్","పనీర్ 100 g","కీరదోస","టమాటా","ఉల్లి","నిమ్మకాయ"],how:"పనీర్ పెనం మీద కాల్చండి. అన్నీ చిన్న ముక్కలు చేసి నిమ్మరసం, ఉప్పు, చాట్ మసాలాతో కలపండి.",hen:"Roast paneer; chop everything small, mix with lemon, salt, chaat masala."},
+ {id:"tofu",te:"టోఫు ఫ్రై + అన్నం",en:"Tofu stir-fry + rice",img:"bowl",q:"tofu vegetable stir fry rice",ne:["Tofu 200 g", "Capsicum", "Cabbage", "Carrot", "Soy sauce 1 spoon", "Rice 1 small katori"],need:["టోఫు 200 g","క్యాప్సికం","క్యాబేజీ","క్యారెట్","సోయా సాస్ 1 చెంచా","అన్నం 1 చిన్న గిన్నె"],how:"టోఫు తుడిచి పెనం మీద బంగారు రంగు వచ్చేవరకు కాల్చండి. కూరగాయలు పెద్ద మంట మీద 3 నిమిషాలు వేయించి, టోఫు, సోయా సాస్ కలపండి.",hen:"Pat tofu dry, roast golden; stir-fry veggies 3 min on high, toss with tofu and soy sauce."},
+ {id:"dal",te:"పప్పు + టోఫు",en:"Dal tadka + tofu",q:"dal tadka",ne:["Dal ⅓ cup", "Tofu 150 g", "Cumin", "Garlic", "Dry red chilli", "1 roti"],need:["పప్పు ⅓ కప్","టోఫు 150 g","జీలకర్ర","వెల్లుల్లి","ఎండుమిర్చి","1 చపాతీ"],how:"పప్పు 3 విషిల్స్. తాలింపు పెట్టి, టోఫు ముక్కలు వేసి 3 నిమిషాలు.",hen:"Dal 3 whistles, add the tadka and tofu, 3 min."},
+ {id:"eggcurry",te:"గుడ్డు కూర + చపాతీ",en:"Egg curry + roti",q:"egg curry roti",ne:["3 eggs", "Onion", "2 tomatoes", "2 rotis"],need:["3 గుడ్లు","ఉల్లి","2 టమాటాలు","2 చపాతీలు"],how:"గుడ్లు 10 నిమిషాలు ఉడకబెట్టి, మసాలాలో ½ కప్ నీళ్లతో 5 నిమిషాలు.",hen:"Boil eggs 10 min, cook in masala with ½ cup water 5 min."},
+ {id:"eggbhurji",te:"గుడ్డు బుర్జీ + చపాతీ",en:"Egg bhurji + roti",q:"egg bhurji roti",ne:["3 eggs + 2 whites", "Onion", "Tomato", "Green chilli", "2 rotis"],need:["3 గుడ్లు + 2 తెల్లసొనలు","ఉల్లి","టమాటా","మిర్చి","2 చపాతీలు"],how:"ఉల్లి, టమాటా వేయించి, గుడ్లు కొట్టి వేసి 2 నిమిషాలు కలపండి.",hen:"Fry onion and tomato, add beaten eggs, stir 2 min."}
 ]};
 /* Same rotation as the Cherry app: plan day 1 = 4 Nov 2026, 9 dishes per meal, shifts every day and every week. */
 const START=new Date(2026,10,4);
@@ -238,8 +240,8 @@ function card(d){
    ${d.img?`<img src="${IMG[d.img]}" alt="${esc(d.en)}" loading="lazy">`:""}
    <div class="body">
     <h3>${esc(d.te)}<span class="en">${esc(d.en)}</span></h3>
-    <div><div class="label">కావాల్సినవి · You need</div><div class="need">${d.need.map(n=>`<span>${esc(n)}</span>`).join("")}</div></div>
-    <p class="how"><span class="label">ఎలా · How</span><br>${esc(d.how)}<span class="en">${esc(d.hen)}</span></p>
+    <div><div class="label">కావాల్సినవి · You need</div><div class="need">${d.need.map((n,i)=>`<span>${esc(n)}<i>${esc((d.ne||[])[i]||"")}</i></span>`).join("")}</div></div>
+    <p class="how"><span class="label">ఎలా చేయాలి · How to make</span><br>${esc(d.how)}<span class="en">${esc(d.hen)}</span></p>
     <a class="pics" href="${g}" target="_blank" rel="noopener">Photos ↗</a>
    </div></article>`;
 }
@@ -261,10 +263,10 @@ function weekView(){
 }
 function mealView(k){const t=TABS.find(x=>x[0]===k);return `<h2>${t[1]}<span class="en">${t[2]} · ${D[k].length} dishes</span></h2><div class="grid">${D[k].map(card).join("")}</div>`}
 function snackView(){return `<h2>స్నాక్స్<span class="en">Snacks</span></h2><div class="snacks">
- <div class="snack"><div class="t">10:30 AM</div>1 పండు + 1 గిన్నె పెరుగు, లేదా గుప్పెడు వేయించిన శనగలు<div class="en">1 fruit + curd, or a handful of roasted chana</div></div>
- <div class="snack"><div class="t">4:30 PM · జిమ్ ముందు</div>1 అరటిపండు + 1 స్కూప్ వే నీళ్లలో<div class="en">1 banana + 1 scoop whey in water</div></div>
- <div class="snack"><div class="t">ఆకలిగా ఉంటే · If hungry</div>మజ్జిగ, కీరదోస / క్యారెట్ ముక్కలు, గుడ్డు తెల్లసొన<div class="en">Buttermilk, cucumber or carrot sticks, egg whites</div></div>
- <div class="snack no"><div class="t">వద్దు · Avoid</div>బిస్కెట్లు, మిక్సర్, స్వీట్లు, చక్కెర టీ, బజ్జీలు<div class="en">Biscuits, mixture, sweets, sugary tea, fried snacks</div></div></div>`}
+ <div class="snack"><div class="t">10:30 AM</div>1 పండు + 1 గిన్నె పెరుగు, లేదా గుప్పెడు వేయించిన శనగలు<div class="en sn">1 fruit + curd, or a handful of roasted chana</div></div>
+ <div class="snack"><div class="t">4:30 PM · జిమ్ ముందు</div>1 అరటిపండు + 1 స్కూప్ వే నీళ్లలో<div class="en sn">1 banana + 1 scoop whey in water</div></div>
+ <div class="snack"><div class="t">ఆకలిగా ఉంటే · If hungry</div>మజ్జిగ, కీరదోస / క్యారెట్ ముక్కలు, గుడ్డు తెల్లసొన<div class="en sn">Buttermilk, cucumber or carrot sticks, egg whites</div></div>
+ <div class="snack no"><div class="t">వద్దు · Avoid</div>బిస్కెట్లు, మిక్సర్, స్వీట్లు, చక్కెర టీ, బజ్జీలు<div class="en sn">Biscuits, mixture, sweets, sugary tea, fried snacks</div></div></div>`}
 function shopView(){
   const wk=weekStart(new Date()).toDateString();
   if(store.get("amma-shop-week")!==wk){store.set("amma-shop",{});store.set("amma-shop-week",wk)}
